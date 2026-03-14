@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Algebra — Full Proof & Definition Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0f;
+  --surf: #0f1219;
+  --surf2: #141820;
+  --border: #1c2232;
+  --border2: #242d40;
+  --cyan: #5de4c7;
+  --gold: #ffe66d;
+  --rose: #ff6e6e;
+  --lavender: #b8aaff;
+  --mint: #72f1b8;
+  --peach: #ffb86c;
+  --blue: #7ec8e3;
+  --pink: #f78cb2;
+  --text: #d4dff0;
+  --muted: #4a5568;
+  --dim: #2d3748;
+  --step-bg: rgba(255,255,255,0.03);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 36px 22px 80px;
+}
+
+/* ── HEADER ── */
+.page-header {
+  padding: 20px 0 20px 22px;
+  border-left: 5px solid var(--cyan);
+  margin-bottom: 36px;
+}
+.page-header h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.page-header p {
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+/* ── NAV PILLS ── */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 34px;
+}
+.nav a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  transition: 0.15s;
+}
+.nav a:hover { color: var(--cyan); border-color: var(--cyan); }
+
+/* ── PART HEADERS ── */
+.part-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 0 6px 0;
+  margin: 40px 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.card-head:hover { background: rgba(255,255,255,0.02); }
+
+.card-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 2px;
+  color: #000;
+  flex-shrink: 0;
+  margin-top: 1px;
+  letter-spacing: 0.06em;
+}
+
+.card-title-block { flex: 1; }
+.card-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.card-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-style: italic;
+  font-family: 'Crimson Pro', serif;
+}
+
+.toggle-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  flex-shrink: 0;
+  margin-top: 3px;
+  transition: 0.2s;
+}
+.card.open .toggle-btn { transform: rotate(180deg); }
+
+.card-body {
+  display: none;
+  padding: 0;
+}
+.card.open .card-body { display: block; }
+
+/* ── DEFINITION TABLE (multi-way) ── */
+.def-table { width: 100%; border-collapse: collapse; }
+.def-table tr { border-bottom: 1px solid var(--border); }
+.def-table tr:last-child { border-bottom: none; }
+.def-table td { padding: 10px 16px; vertical-align: top; }
+.def-table .def-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  width: 28px;
+  padding-right: 4px;
+}
+.def-table .def-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text);
+  width: 170px;
+  font-weight: 500;
+}
+.def-table .def-content {
+  font-size: 14px;
+  color: var(--text);
+}
+.def-table .def-tag {
+  width: 90px;
+  text-align: right;
+}
+.def-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+/* ── PROOF BLOCK ── */
+.proof-wrap { padding: 16px 18px; }
+
+.proof-claim {
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid var(--gold);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border-radius: 0 4px 4px 0;
+  font-size: 14px;
+}
+.proof-claim strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.proof-steps { counter-reset: step; }
+.step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.step:last-child { border-bottom: none; }
+
+.step-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 700;
+  padding-top: 2px;
+}
+.step-content { font-size: 14px; line-height: 1.7; }
+.step-content .math,
+.math {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 7px;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 1px 0;
+  color: #c8d8f0;
+}
+.step-content .eq-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  display: block;
+  background: rgba(255,255,255,0.04);
+  border-radius: 3px;
+  padding: 6px 12px;
+  margin: 6px 0;
+  color: #c8d8f0;
+  border-left: 2px solid var(--border2);
+}
+.step-content .key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: rgba(94,228,199,0.08);
+  color: var(--cyan);
+  padding: 1px 7px;
+  border-radius: 3px;
+}
+.step-content .warn {
+  background: rgba(255,110,110,0.08);
+  color: var(--rose);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 3px;
+}
+.step-content .because {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 13px;
+}
+.step-result {
+  background: rgba(94,228,199,0.06);
+  border: 1px solid rgba(94,228,199,0.15);
+  border-radius: 4px;
+  padding: 8px 14px;
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--cyan);
+}
+
+/* ── COMBO GRID ── */
+.combo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1px;
+  background: var(--border);
+}
+.combo-cell {
+  background: var(--surf2);
+  padding: 14px 16px;
+}
+.combo-header-cell {
+  background: var(--surf);
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.combo-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.combo-list { list-style: none; }
+.combo-list li {
+  font-size: 13px;
+  padding: 2px 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.combo-list li::before {
+  content: '✓';
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.combo-list li.neg::before { content: '✗'; color: var(--rose); }
+.combo-list li.warn-item::before { content: '!'; color: var(--peach); }
+
+/* ── TAG CHIPS ── */
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  display: inline-block;
+}
+.chip-def    { background: rgba(180,180,180,0.1); color: #888; }
+.chip-ch1    { background: rgba(255,230,109,0.12); color: var(--gold); }
+.chip-ch2    { background: rgba(114,241,184,0.12); color: var(--mint); }
+.chip-ch3    { background: rgba(126,200,227,0.12); color: var(--blue); }
+.chip-eig    { background: rgba(184,170,255,0.12); color: var(--lavender); }
+.chip-svd    { background: rgba(247,140,178,0.12); color: var(--pink); }
+.chip-iter   { background: rgba(255,184,108,0.12); color: var(--peach); }
+.chip-thm    { background: rgba(93,228,199,0.12); color: var(--cyan); }
+
+/* ── NOTE BOX ── */
+.note-box {
+  background: rgba(255,184,108,0.05);
+  border: 1px solid rgba(255,184,108,0.2);
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--peach);
+}
+.note-box strong {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* ── CHAIN BOX ── */
+.chain-box {
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid var(--border);
+  padding: 12px 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2;
+}
+.chain-box .hi { color: var(--text); }
+
+/* ── SECTION COLORS ── */
+.c-cyan   { background: var(--cyan);     color: #000; }
+.c-gold   { background: var(--gold);     color: #000; }
+.c-mint   { background: var(--mint);     color: #000; }
+.c-rose   { background: var(--rose);     color: #fff; }
+.c-lav    { background: var(--lavender); color: #000; }
+.c-peach  { background: var(--peach);    color: #000; }
+.c-blue   { background: var(--blue);     color: #000; }
+.c-pink   { background: var(--pink);     color: #000; }
+.c-dim    { background: var(--dim);      color: #aaa; }
+.c-cyan2  { background: #3dd9b5;         color: #000; }
+
+.border-cyan  { border-left: 3px solid var(--cyan); }
+.border-gold  { border-left: 3px solid var(--gold); }
+.border-mint  { border-left: 3px solid var(--mint); }
+.border-rose  { border-left: 3px solid var(--rose); }
+.border-lav   { border-left: 3px solid var(--lavender); }
+.border-peach { border-left: 3px solid var(--peach); }
+.border-blue  { border-left: 3px solid var(--blue); }
+.border-pink  { border-left: 3px solid var(--pink); }
+.border-dim   { border-left: 3px solid var(--dim); }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  margin-top: 50px;
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+/* inline italic label */
+em.lbl {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+
+/* divider inside card */
+.inner-divider {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 7px 18px;
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+hr.proof-sep {
+  border: none;
+  border-top: 1px dashed var(--border2);
+  margin: 16px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Linear Algebra — Proofs, Multi-Way Definitions & Combinations</h1>
+  <p>// Every key fact with proof, every definition from multiple angles, every property combination spelled out</p>
+</div>
+
+<div class="nav">
+  <a href="#part-A">PART A — Definitions (Multiple Ways)</a>
+  <a href="#part-B">PART B — Key Proofs</a>
+  <a href="#part-C">PART C — Combination Situations</a>
+  <a href="#d1">PD (7 ways)</a>
+  <a href="#d2">Invertible (10 ways)</a>
+  <a href="#d3">Unique LS</a>
+  <a href="#d4">Rank</a>
+  <a href="#d5">Neumann + Invertibility</a>
+  <a href="#d6">Splitting + Error Eq.</a>
+  <a href="#d7">Condition Number</a>
+  <a href="#d8">Rayleigh + Shift</a>
+  <a href="#p1">Sym→Spectral</a>
+  <a href="#p2">Sym PD↔λ&gt;0</a>
+  <a href="#p3">Schur</a>
+  <a href="#p4">Eigenvec indep</a>
+  <a href="#p5">A=VDV⁻¹</a>
+  <a href="#p6">AᵀA PSD proof</a>
+  <a href="#p7">Proj P²=P</a>
+  <a href="#p8">Householder</a>
+  <a href="#p9">SVD construct</a>
+  <a href="#p10">Reg PD proof</a>
+  <a href="#p11">det=∏λ</a>
+  <a href="#p12">Orthon→indep</a>
+  <a href="#p13">Neumann proof</a>
+  <a href="#p14">Perturbation proof</a>
+  <a href="#p15">SPD sum + shift</a>
+  <a href="#p16">Skew-symmetry facts</a>
+  <a href="#c1">Sym+PD</a>
+  <a href="#c2">Tall+FullRank</a>
+  <a href="#c3">Sym only</a>
+  <a href="#c4">All combos</a>
+  <a href="#c5">Iterative subtleties</a>
+  <a href="#c6">Power method traps</a>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<div class="part-title" id="part-A">Part A — Definitions from Multiple Angles</div>
+<!-- ════════════════════════════════════════════════════════════ -->
+
+<!-- DEF 1: PD -->
+<div class="card border-cyan open" id="d1">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-cyan">D1</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--cyan)">Positive Definite (PD) — 7 Equivalent Characterizations</div>
+      <div class="card-subtitle">A is symmetric throughout. All 7 are 100% equivalent.</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">Quadratic Form</td>
+        <td class="def-content"><span class="math">xᵀAx &gt; 0</span> for all x ≠ 0 — the definition. Acts as a generalized "distance."</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">Eigenvalues</td>
+        <td class="def-content">All eigenvalues are <strong>strictly positive</strong>: λ₁, λ₂, …, λₙ &gt; 0. <em class="lbl">How:</em> use Spectral Theorem A = QΛQᵀ, then xᵀAx = zᵀΛz = Σλᵢzᵢ² &gt; 0 iff all λᵢ &gt; 0.</td>
+        <td class="def-tag"><span class="chip chip-eig">EIGENVALUES</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">LU Pivots</td>
+        <td class="def-content">All pivots in LU decomposition are <strong>&gt; 0</strong>. (Without row swaps — if LU exists cleanly.)</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Cholesky Success</td>
+        <td class="def-content">Cholesky decomposition <span class="math">A = LLᵀ</span> succeeds with all diagonal entries of L strictly positive. If it fails midway → A was NOT PD.</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">Leading Minors</td>
+        <td class="def-content">All leading principal minors are <strong>&gt; 0</strong>: <span class="math">det(A₁) &gt; 0, det(A₂) &gt; 0, …, det(A) &gt; 0</span> where Aₖ is the top-left k×k block.</td>
+        <td class="def-tag"><span class="chip chip-eig">EIGENVALUES</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">Gram Matrix Form</td>
+        <td class="def-content"><span class="math">A = BᵀB</span> for some matrix B with <strong>full column rank</strong>. Full rank is essential — without it you only get PSD.</td>
+        <td class="def-tag"><span class="chip chip-ch2">CH2</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#7</td>
+        <td class="def-label">Tall + Full Col Rank</td>
+        <td class="def-content">If A is tall with full column rank, then <span class="math">AᵀA</span> is automatically PD. This is #6 with B = A.</td>
+        <td class="def-tag"><span class="chip chip-ch2">CH2</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#8</td>
+        <td class="def-label">Singular Values</td>
+        <td class="def-content">All singular values <span class="math">σᵢ &gt; 0</span> AND A is symmetric. (For sym. A: σᵢ = |λᵢ|, and for symmetric PD specifically σᵢ = λᵢ.)</td>
+        <td class="def-tag"><span class="chip chip-svd">SVD</span></td>
+      </tr>
+    </table>
+    <div class="chain-box">
+      <span class="hi">PSD vs PD:</span> Replace every "&gt;" with "≥" to get <span class="hi">Positive Semi-Definite (PSD)</span>. AᵀA is always PSD; it's PD only when A has full column rank.
+    </div>
+  </div>
+</div>
+
+<!-- DEF 2: INVERTIBLE -->
+<div class="card border-gold open" id="d2">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-gold">D2</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--gold)">Invertible (Non-Singular) — 10 Equivalent Conditions</div>
+      <div class="card-subtitle">For square A: all of these live or die together. If one fails, all fail.</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">Definition</td>
+        <td class="def-content">There exists A⁻¹ such that <span class="math">AA⁻¹ = A⁻¹A = I</span></td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">Determinant</td>
+        <td class="def-content"><span class="math">det(A) ≠ 0</span>. Compute via: product of U diagonal (from LU) or product of eigenvalues.</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">Full Rank</td>
+        <td class="def-content"><span class="math">rank(A) = n</span> (for n×n matrix)</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Column Independence</td>
+        <td class="def-content">Columns of A are linearly independent</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">Trivial Null Space</td>
+        <td class="def-content"><span class="math">null(A) = {0}</span> — the only solution to Ax = 0 is x = 0</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">LU Pivots</td>
+        <td class="def-content">All pivots ≠ 0 in LU (no zero on diagonal of U)</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#7</td>
+        <td class="def-label">Eigenvalues</td>
+        <td class="def-content">All eigenvalues ≠ 0 (since det(A) = ∏λᵢ)</td>
+        <td class="def-tag"><span class="chip chip-eig">EIGENVALUES</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#8</td>
+        <td class="def-label">QR Diagonal</td>
+        <td class="def-content">All diagonal entries of R in QR decomposition are nonzero</td>
+        <td class="def-tag"><span class="chip chip-ch3">CH3</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#9</td>
+        <td class="def-label">Singular Values</td>
+        <td class="def-content">All singular values σᵢ &gt; 0 — the most numerically stable check</td>
+        <td class="def-tag"><span class="chip chip-svd">SVD</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#10</td>
+        <td class="def-label">Unique Solution</td>
+        <td class="def-content">Ax = b has exactly one solution for every b</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+    </table>
+    <div class="chain-box">
+      <span class="hi">det(A) two ways:</span> From LU → <span class="hi">det(A) = (±1) · ∏ pivots_i</span> (sign from P). From eigenvalues → <span class="hi">det(A) = λ₁·λ₂·…·λₙ</span>. Both give the same number.
+    </div>
+  </div>
+</div>
+
+<!-- DEF 3: Unique LS -->
+<div class="card border-mint" id="d3">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-mint">D3</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--mint)">Unique LS Solution x̂ — The One Chain</div>
+      <div class="card-subtitle">All of these say the same thing in different tools' languages</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">Full Column Rank</td>
+        <td class="def-content">A has full column rank — the fundamental condition</td>
+        <td class="def-tag"><span class="chip chip-def">CORE</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">AᵀA is PD</td>
+        <td class="def-content"><span class="math">AᵀA</span> is PD → invertible → normal equations <span class="math">AᵀAx̂ = Aᵀb</span> have unique solution</td>
+        <td class="def-tag"><span class="chip chip-ch2">CH2</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">R diagonal nonzero</td>
+        <td class="def-content">Diagonal of R in QR has no zeros → <span class="math">x̂ = R⁻¹c₁</span> unique (back substitution)</td>
+        <td class="def-tag"><span class="chip chip-ch3">CH3</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Cholesky on AᵀA</td>
+        <td class="def-content">Cholesky succeeds on AᵀA → it's PD → unique x̂. Costs n³/6 after computing AᵀA.</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">All σᵢ &gt; 0</td>
+        <td class="def-content">SVD: all singular values positive → <span class="math">x̂ = VΣ⁻¹Uᵀb</span> unique</td>
+        <td class="def-tag"><span class="chip chip-svd">SVD</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">null(A) = {0}</td>
+        <td class="def-content">Trivial null space → no free variables in normal equations → unique solution</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+    </table>
+    <div class="chain-box">
+      Full col rank <span class="hi">⟺</span> R diagonal nonzero <span class="hi">⟺</span> AᵀA is PD <span class="hi">⟺</span> Cholesky works on AᵀA <span class="hi">⟺</span> all σᵢ &gt; 0 <span class="hi">⟺</span> unique x̂
+    </div>
+  </div>
+</div>
+
+<!-- DEF 4: Rank -->
+<div class="card border-lav" id="d4">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-lav">D4</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--lavender)">Rank of A — 6 Ways to Find It</div>
+      <div class="card-subtitle">Same number, different computational approaches</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">Row Reduction</td>
+        <td class="def-content">Count nonzero pivots in row echelon form — most direct by hand</td>
+        <td class="def-tag"><span class="chip chip-ch1">CH1</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">Col Space Dim</td>
+        <td class="def-content"><span class="math">rank(A) = dim(col(A))</span> — dimension of the column space</td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">QR Diagonal</td>
+        <td class="def-content">Count nonzero diagonal entries of R in QR decomposition</td>
+        <td class="def-tag"><span class="chip chip-ch3">CH3</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Singular Values</td>
+        <td class="def-content">Count nonzero σᵢ in SVD — most <strong>numerically reliable</strong> method</td>
+        <td class="def-tag"><span class="chip chip-svd">SVD</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">Rank-Nullity Theorem</td>
+        <td class="def-content"><span class="math">rank(A) = n − dim(null(A))</span> where n = number of columns</td>
+        <td class="def-tag"><span class="chip chip-thm">THEOREM</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">Via AᵀA</td>
+        <td class="def-content"><span class="math">rank(A) = rank(AᵀA)</span> — always true, key for least squares analysis</td>
+        <td class="def-tag"><span class="chip chip-ch2">CH2</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#7</td>
+        <td class="def-label">Eigenvalues (sq.)</td>
+        <td class="def-content">For square A: rank = number of nonzero eigenvalues only when A is diagonalizable / in special structured settings. In general, safest is pivots or singular values.</td>
+        <td class="def-tag"><span class="chip chip-eig">EIGENVALUES</span></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- DEF 5 -->
+<div class="card border-blue" id="d5">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-blue">D5</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--blue)">Norm Conditions that Force Invertibility</div>
+      <div class="card-subtitle">The Neumann-series toolbox: “small enough perturbation” cannot destroy invertibility</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">Neumann Core</td>
+        <td class="def-content">If <span class="math">‖C‖ &lt; 1</span> (for any submultiplicative operator norm), then <span class="math">I-C</span> is invertible and <span class="math">(I-C)^{-1} = I + C + C² + C³ + ...</span></td>
+        <td class="def-tag"><span class="chip chip-thm">THEOREM</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">Near Identity</td>
+        <td class="def-content">If <span class="math">‖I − A‖ &lt; 1</span>, then A is invertible by writing <span class="math">A = I − (I − A)</span></td>
+        <td class="def-tag"><span class="chip chip-iter">NORM</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">Inverse Bound</td>
+        <td class="def-content">If <span class="math">‖I − A‖ &lt; 1</span>, then <span class="math">‖A^{-1}‖ ≤ 1 / (1 − ‖I − A‖)</span></td>
+        <td class="def-tag"><span class="chip chip-iter">BOUND</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Product Case</td>
+        <td class="def-content">If <span class="math">‖I − AB‖ &lt; 1</span> and A,B are square, then <span class="math">AB</span> is invertible, hence A and B are both invertible and full rank</td>
+        <td class="def-tag"><span class="chip chip-def">CORE</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">Perturbation Test</td>
+        <td class="def-content">If A is invertible and <span class="math">‖E‖ &lt; 1/‖A^{-1}‖</span>, then <span class="math">A+E</span> is invertible because <span class="math">A+E = A(I + A^{-1}E)</span></td>
+        <td class="def-tag"><span class="chip chip-thm">THEOREM</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">Spectral Radius Form</td>
+        <td class="def-content">If <span class="math">ρ(A) &lt; 1</span>, then <span class="math">I−A</span> is invertible since 1 is not an eigenvalue of A</td>
+        <td class="def-tag"><span class="chip chip-eig">EIGENVALUES</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#7</td>
+        <td class="def-label">DD Route</td>
+        <td class="def-content">If A is strictly diagonally dominant, then A is invertible (e.g. by Gershgorin: 0 lies in no disc)</td>
+        <td class="def-tag"><span class="chip chip-thm">GERSH.</span></td>
+      </tr>
+    </table>
+    <div class="chain-box">
+      <span class="hi">Master picture:</span> <span class="hi">‖C‖ &lt; 1</span> ⟹ <span class="hi">ρ(C) &lt; 1</span> ⟹ <span class="hi">I−C invertible</span>. The norm test is stronger, but easy to check.
+    </div>
+  </div>
+</div>
+
+<!-- DEF 6 -->
+<div class="card border-peach" id="d6">
+  <div class="card-head" onclick="toggle(this)">
+    <span class="card-num c-peach">D6</span>
+    <div class="card-title-block">
+      <div class="card-title" style="color:var(--peach)">General Splitting Framework, Fixed-Point Form, and Error Equation</div>
+      <div class="card-subtitle">The umbrella that contains Jacobi, GS, and SOR</div>
+    </div>
+    <span class="toggle-btn">▼</span>
+  </div>
+  <div class="card-body">
+    <table class="def-table">
+      <tr>
+        <td class="def-num">#1</td>
+        <td class="def-label">General Splitting</td>
+        <td class="def-content">Write <span class="math">A = M − N</span> with M invertible. Then <span class="math">Mx_{k+1} = Nx_k + b</span></td>
+        <td class="def-tag"><span class="chip chip-def">DEF</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#2</td>
+        <td class="def-label">Iteration Matrix</td>
+        <td class="def-content">Equivalent fixed-point form: <span class="math">x_{k+1} = M^{-1}Nx_k + M^{-1}b</span>, so <span class="math">T = M^{-1}N</span></td>
+        <td class="def-tag"><span class="chip chip-iter">ITERATION</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#3</td>
+        <td class="def-label">Correctness</td>
+        <td class="def-content">Any fixed point x* satisfies <span class="math">x^* = M^{-1}Nx^* + M^{-1}b</span> ⟺ <span class="math">(M−N)x^* = b</span> ⟺ <span class="math">Ax^* = b</span></td>
+        <td class="def-tag"><span class="chip chip-thm">THEOREM</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#4</td>
+        <td class="def-label">Convergence Test</td>
+        <td class="def-content">The iteration converges for every starting vector iff <span class="math">ρ(M^{-1}N) &lt; 1</span></td>
+        <td class="def-tag"><span class="chip chip-eig">SPECTRAL</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#5</td>
+        <td class="def-label">Error Equation</td>
+        <td class="def-content">If <span class="math">e_k = x_k − x^*</span>, then <span class="math">e_{k+1} = Te_k</span>, hence <span class="math">e_k = T^k e_0</span></td>
+        <td class="def-tag"><span class="chip chip-iter">ERROR</span></td>
+      </tr>
+      <tr>
+        <td class="def-num">#6</td>
+        <td class="def-label">Jacobi / GS / SOR</td>
+        <td class="def-content">Jacobi: <span class="math">M=D,
